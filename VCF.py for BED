@@ -1,0 +1,40 @@
+import sys
+print("##fileformat=VCFv4.2")
+print('##INFO=<ID=SVTYPE,Number=1,Type=String,Description=\"Type of structural variant\">')
+print('##INFO=<ID=SVLEN,Number=.,Type=Integer,Description="Difference in length between REF and ALT alleles">')
+print('##INFO=<ID=END,Number=1,Type=Integer,Description="End position of the variant described in this record">')
+print("CHROM\tPOS\tID\tREF\tALT\tQUAL\tFILTER\tINFO")
+
+
+#f = open("/Users/menoshasivaretnam/Downloads/2018-10981-03_aberrations.bed","r")
+
+#f = open("/Users/menoshasivaretnam/Downloads/2018-10981-03_aberrations.bed", "r")
+f = open( sys.argv[1] , "r")
+
+rows = f.readlines()[1:]
+
+for line in rows:
+        splits = line.rstrip().split('\t')
+        #print(splits)
+        chromosome=splits[0]
+        position=splits[1]
+        id="."
+        reference="N"
+
+        position5 = splits[5]
+        if position5 == "gain":
+                alt="<DUP>"
+                svtype = "SVTYPE=DUP"
+        elif position5=="loss":
+                alt="<DEL>"
+                svtype = "SVTYPE=DEL"
+
+        quality="."
+        filter="PASS"
+        end = "END=" + splits[2]
+        info = ";".join([svtype,end])
+        output=[chromosome,position,id,reference,alt,quality,filter,info]
+        output = "\t".join(output)
+        print(output)
+
+
